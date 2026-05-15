@@ -2,7 +2,7 @@ name: Deploy Backend Despachos to ECR and EC2
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "deploy" ]
     paths:
       - 'proyecto_semestral/back-Despachos_SpringBoot/**'
 

@@ -2,7 +2,7 @@ name: Deploy Frontend to ECR and EC2
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "deploy" ]
     paths:
       - 'proyecto_semestral/front_despacho/**'
 
