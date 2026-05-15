@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'proyecto-semestral/back-Ventas_SpringBoot/**'
+      - 'proyecto_semestral/back-Ventas_SpringBoot/**'
 
 env:
   AWS_REGION: us-east-1
@@ -35,7 +35,7 @@ jobs:
 
       - name: Build and Push Image
         run: |
-          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} ./proyecto-semestral/back-Ventas_SpringBoot/Springboot-API-REST
+          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} ./proyecto_semestral/back-Ventas_SpringBoot/Springboot-API-REST
           docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
       - name: Deploy to EC2 via SSM
