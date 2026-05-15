@@ -17,8 +17,8 @@ WORKDIR /app
 # Copiar solo el jar generado desde la etapa de build
 COPY --from=build /app/target/*.jar app.jar
 
-# Exponer el puerto (el puerto 3001 corresponde a la api de ventas)
-EXPOSE 3001
+# Exponer el puerto (el puerto 8080 corresponde a la api de ventas)
+EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
 #test de cambios
