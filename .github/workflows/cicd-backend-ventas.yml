@@ -48,13 +48,6 @@ jobs:
               "sudo docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}",
               "sudo docker stop ${{ env.CONTAINER_NAME }} || true",
               "sudo docker rm -f ${{ env.CONTAINER_NAME }} || true",
-              "sudo docker run -d --name ${{ env.CONTAINER_NAME }} \
-                -p 8081:8080 \
-                -e DB_ENDPOINT=${{ secrets.DB_ENDPOINT }} \
-                -e DB_PORT=3306 \
-                -e DB_NAME=ventas_db?allowPublicKeyRetrieval=true&useSSL=false \
-                -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-                -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-                ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
+              "sudo docker run -d --name ${{ env.CONTAINER_NAME }} -p 8081:8080 -e DB_ENDPOINT=${{ secrets.DB_ENDPOINT }} -e DB_PORT=${{ secrets.DB_PORT }} -e DB_NAME=${{ secrets.DB_NAME }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
             ]' \
             --region ${{ env.AWS_REGION }}
