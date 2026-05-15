@@ -12,7 +12,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ev2_mysql_data:/var/lib/mysql  # Persistencia de datos crítica
+      - ev2_mysql_data:/var/lib/mysql  # Persistencia de datos db mysql crítica
     networks:
       - ev2-devops
     deploy:
