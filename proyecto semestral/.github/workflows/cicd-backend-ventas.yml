@@ -1,0 +1,46 @@
+name: Deploy Backend Ventas to ECR and EC2
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'proyecto-semestral/back-Ventas_SpringBoot/**'
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 103446603104.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REPOSITORY: ev2-backend
+  IMAGE_TAG: ventas
+  CONTAINER_NAME: backend-ventas
+
+jobs:
+  deploy:
+    name: Build, Push and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and Push Image
+        run: |
+          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} ./proyecto-semestral/back-Ventas_SpringBoot/Springboot-API-REST
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+
+      - name: Deploy to EC2 via SSM
+        run: |
+          aws ssm send-command \
+            --instance-ids ${{ secrets.EC2_BACKEND_INSTANCE_ID }} \
+            --document-name "AWS-RunShellScript" \
+            --parameters 'commands=["aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}", "docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}", "docker stop ${{ env.CONTAINER_NAME }} || true", "docker rm ${{ env.CONTAINER_NAME }} || true", "docker run -d --name ${{ env.CONTAINER_NAME }} -p 8081:8080 ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"]'
